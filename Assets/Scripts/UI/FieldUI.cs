@@ -1,58 +1,78 @@
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class FieldUI : MonoBehaviour
 {
-    public Transform PlayerFieldPanel;
-    public Transform NpcFieldPanel;
-
-    public TextMeshProUGUI PlayerScoreText;
-    public TextMeshProUGUI NpcScoreText;
-
+    public List<PlayerAreaUI> PlayerAreas = new List<PlayerAreaUI>();
     public GameObject CardButtonPrefab;
 
-    private readonly List<GameObject> playerFieldCards = new List<GameObject>();
-    private readonly List<GameObject> npcFieldCards = new List<GameObject>();
+    private readonly Dictionary<int, List<GameObject>> spawnedFieldCards = new Dictionary<int, List<GameObject>>();
 
-    public void ResetFieldUI()
+    public void Initialize(List<PlayerState> players)
     {
-        ClearCardList(playerFieldCards);
-        ClearCardList(npcFieldCards);
+        for (int i = 0; i < PlayerAreas.Count; i++)
+        {
+            bool active = i < players.Count;
+            PlayerAreas[i].gameObject.SetActive(active);
 
-        UpdateScoreTexts(0, 0);
+            if (active)
+            {
+                PlayerAreas[i].SetPlayerName(players[i].PlayerName);
+                PlayerAreas[i].SetScore(players[i].TotalScore);
+                PlayerAreas[i].SetInvasives(players[i].PersistentInvasives.Count);
+            }
+        }
+    }
+
+    public void ResetFieldUI(List<PlayerState> players)
+    {
+        foreach (var pair in spawnedFieldCards)
+        {
+            foreach (var obj in pair.Value)
+            {
+                if (obj != null)
+                    Destroy(obj);
+            }
+        }
+
+        spawnedFieldCards.Clear();
+        UpdateRunningDisplays(players);
     }
 
     public void AddPlantedCards(List<PlayerState> players, Dictionary<int, List<CardData>> selections)
     {
-        Debug.Log("AddPlantedCards called");
-        foreach (var player in players)
+        for (int i = 0; i < players.Count && i < PlayerAreas.Count; i++)
         {
+            PlayerState player = players[i];
+
             if (!selections.ContainsKey(player.PlayerId)) continue;
             if (selections[player.PlayerId] == null || selections[player.PlayerId].Count == 0) continue;
 
+            if (!spawnedFieldCards.ContainsKey(player.PlayerId))
+                spawnedFieldCards[player.PlayerId] = new List<GameObject>();
+
             foreach (var card in selections[player.PlayerId])
             {
-                if (player.IsHuman)
-                {
-                    SpawnCardInField(card, PlayerFieldPanel, playerFieldCards);
-                }
-                else
-                {
-                    SpawnCardInField(card, NpcFieldPanel, npcFieldCards);
-                }
+                SpawnCardInField(card, PlayerAreas[i].FieldPanel, spawnedFieldCards[player.PlayerId]);
             }
         }
 
-        UpdateRunningScores(players);
+        UpdateRunningDisplays(players);
     }
 
     private void SpawnCardInField(CardData card, Transform parent, List<GameObject> trackingList)
     {
+        if (parent == null)
+        {
+            Debug.LogError("SpawnCardInField failed: parent is null for card " + card.CardName);
+            return;
+        }
+
+        Debug.Log("Spawning field card " + card.CardName + " into " + parent.name);
+
         GameObject cardGO = Instantiate(CardButtonPrefab, parent);
         cardGO.SetActive(true);
-        Debug.Log("Spawned field card: " + card.CardName + " into " + parent.name);
 
         RectTransform rt = cardGO.GetComponent<RectTransform>();
         if (rt != null)
@@ -67,6 +87,10 @@ public class FieldUI : MonoBehaviour
         {
             cardUI.Label.text = card.CardName + "\n" + card.BasePoints + " pts";
         }
+        else
+        {
+            Debug.LogWarning("CardUIButton or Label missing on spawned field card prefab.");
+        }
 
         Button button = cardGO.GetComponent<Button>();
         if (button != null)
@@ -77,60 +101,24 @@ public class FieldUI : MonoBehaviour
         trackingList.Add(cardGO);
     }
 
-    private void UpdateRunningScores(List<PlayerState> players)
+    private void UpdateRunningDisplays(List<PlayerState> players)
     {
-        int playerScore = 0;
-        int npcScore = 0;
-
-        foreach (var player in players)
+        for (int i = 0; i < players.Count && i < PlayerAreas.Count; i++)
         {
-            int runningScore = CalculateVisibleRunningScore(player);
+            int visibleScore = players[i].TotalScore + ScoringSystem.CalculateRoundScore(players[i]);
 
-            if (player.IsHuman)
+            Debug.Log("Updating score for " + players[i].PlayerName + " to " + visibleScore);
+            Debug.Log("Updating invasives for " + players[i].PlayerName + " to " + players[i].PersistentInvasives.Count);
+
+            if (PlayerAreas[i] != null)
             {
-                playerScore = runningScore;
+                PlayerAreas[i].SetScore(visibleScore);
+                PlayerAreas[i].SetInvasives(players[i].PersistentInvasives.Count);
             }
             else
             {
-                npcScore = runningScore;
+                Debug.LogError("PlayerAreas[" + i + "] is null.");
             }
         }
-
-        UpdateScoreTexts(playerScore, npcScore);
-    }
-
-    private int CalculateVisibleRunningScore(PlayerState player)
-    {
-        int score = 0;
-
-        foreach (var card in player.PlantedThisRound)
-        {
-            if (card.CardType != CardType.Invasive)
-            {
-                score += card.BasePoints;
-            }
-        }
-
-        return score;
-    }
-
-    private void UpdateScoreTexts(int playerScore, int npcScore)
-    {
-        if (PlayerScoreText != null)
-            PlayerScoreText.text = "Score: " + playerScore;
-
-        if (NpcScoreText != null)
-            NpcScoreText.text = "Score: " + npcScore;
-    }
-
-    private void ClearCardList(List<GameObject> cardList)
-    {
-        foreach (var obj in cardList)
-        {
-            if (obj != null)
-                Destroy(obj);
-        }
-
-        cardList.Clear();
     }
 }

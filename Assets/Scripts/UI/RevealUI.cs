@@ -6,11 +6,20 @@ using UnityEngine.UI;
 public class RevealUI : MonoBehaviour
 {
     public GameObject RevealPanel;
-    public Transform PlayerRevealSlot;
-    public Transform NpcRevealSlot;
+    public List<PlayerAreaUI> PlayerAreas = new List<PlayerAreaUI>();
     public GameObject CardButtonPrefab;
 
     private readonly List<GameObject> spawnedCards = new List<GameObject>();
+    private readonly List<CardData> spawnedCardData = new List<CardData>();
+
+    public void Initialize(List<PlayerState> players)
+    {
+        for (int i = 0; i < PlayerAreas.Count; i++)
+        {
+            bool active = i < players.Count;
+            PlayerAreas[i].gameObject.SetActive(active);
+        }
+    }
 
     public void ClearReveal()
     {
@@ -21,31 +30,39 @@ public class RevealUI : MonoBehaviour
         }
 
         spawnedCards.Clear();
+        spawnedCardData.Clear();
     }
 
     public IEnumerator ShowReveal(List<PlayerState> players, Dictionary<int, List<CardData>> selections)
     {
+        if (RevealPanel == null)
+        {
+            Debug.LogError("RevealUI.ShowReveal failed: RevealPanel is not assigned.");
+            yield break;
+        }
+
         RevealPanel.SetActive(true);
         ClearReveal();
 
-        foreach (var player in players)
+        for (int i = 0; i < players.Count && i < PlayerAreas.Count; i++)
         {
+            PlayerState player = players[i];
+
             if (!selections.ContainsKey(player.PlayerId)) continue;
             if (selections[player.PlayerId] == null || selections[player.PlayerId].Count == 0) continue;
 
             CardData card = selections[player.PlayerId][0];
-            Transform parent = player.IsHuman ? PlayerRevealSlot : NpcRevealSlot;
+            Transform parent = PlayerAreas[i].RevealSlot;
 
             GameObject cardGO = Instantiate(CardButtonPrefab, parent);
             cardGO.SetActive(true);
 
-            // Reset transform so UI layout is predictable
             RectTransform rt = cardGO.GetComponent<RectTransform>();
             if (rt != null)
             {
                 rt.localScale = Vector3.one;
-                rt.anchoredPosition = Vector2.zero;
                 rt.localRotation = Quaternion.identity;
+                rt.anchoredPosition = Vector2.zero;
             }
 
             CardUIButton cardUI = cardGO.GetComponent<CardUIButton>();
@@ -61,27 +78,18 @@ public class RevealUI : MonoBehaviour
             }
 
             spawnedCards.Add(cardGO);
-
-            Debug.Log("Reveal card spawned for " + player.PlayerName + ": " + card.CardName);
+            spawnedCardData.Add(card);
         }
 
-        // Wait before flipping (suspense)
         yield return new WaitForSeconds(0.5f);
 
-        // Flip each card
         for (int i = 0; i < spawnedCards.Count; i++)
         {
-            GameObject obj = spawnedCards[i];
-            PlayerState player = players[i];
-            CardData card = selections[player.PlayerId][0];
-
-            yield return StartCoroutine(FlipCard(obj, card));
+            yield return StartCoroutine(FlipCard(spawnedCards[i], spawnedCardData[i]));
         }
 
-        // Wait after reveal
         yield return new WaitForSeconds(1f);
 
-        // Clear
         ClearReveal();
         RevealPanel.SetActive(false);
     }
@@ -93,8 +101,7 @@ public class RevealUI : MonoBehaviour
 
         float duration = 0.2f;
 
-        // shrink
-        float t = 0;
+        float t = 0f;
         while (t < duration)
         {
             t += Time.deltaTime;
@@ -103,14 +110,12 @@ public class RevealUI : MonoBehaviour
             yield return null;
         }
 
-        // swap content
         if (cardUI != null && cardUI.Label != null)
         {
             cardUI.Label.text = card.CardName + "\n" + card.BasePoints + " pts";
         }
 
-        // expand
-        t = 0;
+        t = 0f;
         while (t < duration)
         {
             t += Time.deltaTime;

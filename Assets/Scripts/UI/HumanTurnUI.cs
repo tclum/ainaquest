@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -13,11 +14,19 @@ public class HumanTurnUI : MonoBehaviour
 
     private PlayerState currentPlayer;
     private CardData selectedCard;
-    private bool selectionConfirmed = false;
+    private bool selectionConfirmed;
+
+    private List<CardUIButton> cardButtons = new List<CardUIButton>();
+
+    public IEnumerator HandleTurn(PlayerState player, Dictionary<int, List<CardData>> selections)
+    {
+        SetupHand(player);
+        yield return new WaitUntil(() => IsSelectionConfirmed());
+        selections[player.PlayerId] = GetConfirmedSelection();
+    }
 
     public void SetupHand(PlayerState player)
     {
-        Debug.Log("Setting up hand for " + player.PlayerName + " with " + player.Hand.Count + " cards.");
         currentPlayer = player;
         selectedCard = null;
         selectionConfirmed = false;
@@ -36,12 +45,23 @@ public class HumanTurnUI : MonoBehaviour
 
         foreach (var card in player.Hand)
         {
-            Debug.Log("Creating UI card for: " + card.CardName);
             GameObject cardObj = Instantiate(CardButtonPrefab, HandPanel);
             cardObj.SetActive(true);
 
+            RectTransform rt = cardObj.GetComponent<RectTransform>();
+            if (rt != null)
+            {
+                rt.localScale = Vector3.one;
+                rt.localRotation = Quaternion.identity;
+                rt.anchoredPosition = Vector2.zero;
+            }
+
             CardUIButton ui = cardObj.GetComponent<CardUIButton>();
-            ui.Setup(card, this);
+            if (ui != null)
+            {
+                ui.Setup(card, this);
+                cardButtons.Add(ui);
+            }
         }
 
         if (LogText != null)
@@ -50,9 +70,21 @@ public class HumanTurnUI : MonoBehaviour
 
     public void SelectCard(CardData card)
     {
-        Debug.Log("Clicked card: " + card.CardName);
+        if (card == null) return;
 
         selectedCard = card;
+
+        for (int i = cardButtons.Count - 1; i >= 0; i--)
+        {
+            if (cardButtons[i] == null)
+            {
+                cardButtons.RemoveAt(i);
+                continue;
+            }
+
+            bool isSelected = cardButtons[i].GetCardData() == card;
+            cardButtons[i].SetSelected(isSelected);
+        }
 
         if (SelectedCardText != null)
             SelectedCardText.text = "Selected: " + card.CardName;
@@ -63,9 +95,8 @@ public class HumanTurnUI : MonoBehaviour
 
     public void ConfirmSelection()
     {
-        if (selectedCard == null) return;
-
-        Debug.Log("Confirmed card: " + selectedCard.CardName);
+        if (selectedCard == null)
+            return;
 
         selectionConfirmed = true;
 
@@ -80,18 +111,36 @@ public class HumanTurnUI : MonoBehaviour
 
     public List<CardData> GetConfirmedSelection()
     {
-        if (selectedCard == null)
-            return new List<CardData>();
+        List<CardData> result = new List<CardData>();
 
-        return new List<CardData> { selectedCard };
+        if (selectedCard != null)
+            result.Add(selectedCard);
+
+        return result;
     }
 
     public void ClearHandUI()
     {
+        cardButtons.Clear();
+
         for (int i = HandPanel.childCount - 1; i >= 0; i--)
         {
             Destroy(HandPanel.GetChild(i).gameObject);
         }
+    }
+
+    public void HideHandUI()
+    {
+        ClearHandUI();
+
+        if (SelectedCardText != null)
+            SelectedCardText.text = "Selected: None";
+
+        if (LogText != null)
+            LogText.text = "";
+
+        if (ConfirmButton != null)
+            ConfirmButton.interactable = false;
     }
 
     public void AddLog(string message)

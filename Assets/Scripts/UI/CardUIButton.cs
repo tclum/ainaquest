@@ -6,9 +6,15 @@ public class CardUIButton : MonoBehaviour
 {
     public TextMeshProUGUI Label;
     public Button Button;
+    public Image Background;
 
     private CardData cardData;
     private HumanTurnUI humanTurnUI;
+
+    public CardData GetCardData()
+    {
+        return cardData;
+    }
 
     public void Setup(CardData card, HumanTurnUI ui)
     {
@@ -20,12 +26,28 @@ public class CardUIButton : MonoBehaviour
             Label.text = card.CardName + "\n" + card.BasePoints + " pts";
         }
 
-        Button.onClick.RemoveAllListeners();
-        Button.onClick.AddListener(OnClicked);
+        SetSelected(false);
+
+        if (Button != null)
+        {
+            Button.onClick.RemoveAllListeners();
+            Button.onClick.AddListener(OnClicked);
+        }
+    }
+
+    public void SetSelected(bool selected)
+    {
+        if (Background != null)
+        {
+            Background.color = selected ? Color.yellow : Color.white;
+        }
     }
 
     private void OnClicked()
     {
-        humanTurnUI.SelectCard(cardData);
+        if (humanTurnUI != null && cardData != null)
+        {
+            humanTurnUI.SelectCard(cardData);
+        }
     }
 }

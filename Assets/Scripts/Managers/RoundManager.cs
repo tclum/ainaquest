@@ -15,7 +15,6 @@ public class RoundManager : MonoBehaviour
 
         List<CardData> deck = GenerateDeck();
         Shuffle(deck);
-
         DealCards(players, deck, 9);
     }
 
@@ -24,63 +23,34 @@ public class RoundManager : MonoBehaviour
         return players.All(p => p.Hand.Count == 0);
     }
 
-    public Dictionary<int, List<CardData>> GetSelections(List<PlayerState> players)
+    public void HandleAITurns(List<PlayerState> players, Dictionary<int, List<CardData>> selections)
     {
-        Dictionary<int, List<CardData>> selections = new Dictionary<int, List<CardData>>();
-
         foreach (var player in players)
         {
-            List<CardData> chosen;
+            if (player.IsHuman) continue;
 
-            if (player.IsHuman)
-            {
-                chosen = ChooseHumanCards(player);
-            }
-            else
-            {
-                chosen = AIPlayerController.ChooseCardsToPlant(player);
-            }
-
-            selections[player.PlayerId] = chosen;
+            selections[player.PlayerId] = AIPlayerController.ChooseCardsToPlant(player);
         }
-
-        return selections;
     }
 
     public void RevealAndResolve(List<PlayerState> players, Dictionary<int, List<CardData>> selections)
     {
         foreach (var player in players)
         {
-            List<CardData> chosen = selections[player.PlayerId];
+            if (!selections.ContainsKey(player.PlayerId)) continue;
+            if (selections[player.PlayerId] == null) continue;
 
-            foreach (var card in chosen)
+            foreach (var card in selections[player.PlayerId])
             {
                 player.Hand.Remove(card);
-
                 if (card.CardType == CardType.Invasive)
                 {
                     player.PersistentInvasives.Add(card);
                 }
-
                 player.PlantedThisRound.Add(card);
-
-                if (card.EffectType == CardEffectType.Wai)
-                {
-                    player.PendingExtraPlants = 1;
-                }
-
-                if (card.EffectType == CardEffectType.Pakukui)
-                {
-                    player.HasPakukui = true;
-                }
 
                 Debug.Log(player.PlayerName + " planted " + card.CardName);
             }
-        }
-
-        foreach (var player in players)
-        {
-            player.ConsumeTurnBonuses();
         }
     }
 
@@ -92,16 +62,6 @@ public class RoundManager : MonoBehaviour
         {
             int fromIndex = (i + 1) % players.Count;
             players[i].Hand = oldHands[fromIndex];
-        }
-    }
-
-    public void ScoreRound(List<PlayerState> players)
-    {
-        foreach (var player in players)
-        {
-            int roundScore = ScoringManager.CalculateRoundScore(player);
-            player.TotalScore += roundScore;
-            Debug.Log(player.PlayerName + " scored " + roundScore + " this round. Total: " + player.TotalScore);
         }
     }
 
@@ -140,11 +100,5 @@ public class RoundManager : MonoBehaviour
             list[i] = list[randomIndex];
             list[randomIndex] = temp;
         }
-    }
-
-    private List<CardData> ChooseHumanCards(PlayerState player)
-    {
-        int count = Mathf.Min(player.CardsToPlantThisTurn(), player.Hand.Count);
-        return player.Hand.Take(count).ToList();
     }
 }

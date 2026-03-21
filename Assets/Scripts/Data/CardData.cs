@@ -32,5 +32,6 @@ public class CardData : ScriptableObject
     public CardColorCategory ColorCategory;
     public int BasePoints;
     public CardEffectType EffectType;
+    public Sprite Artwork;
     [TextArea] public string Description;
 }
