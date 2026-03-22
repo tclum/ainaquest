@@ -1,5 +1,0 @@
-Roadmap priorities:
-1. stabilize player combat and collision alignment
-2. improve room progression loop
-3. improve enemy encounters and rewards
-4. connect combat, loot, and progression into a repeatable roguelike loop

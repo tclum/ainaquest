@@ -13,6 +13,15 @@ public class ResultsUI : MonoBehaviour
     public Button PlayAgainButton;
     public Button MainMenuButton;
 
+    [Header("Gameplay UI To Hide")]
+    public GameObject HandPanel;
+    public GameObject ConfirmButtonObject;
+    public GameObject SelectedCardTextObject;
+    public GameObject LogTextObject;
+    public GameObject RevealPanel;
+    public GameObject FieldPanel;
+    public GameObject TurnTransitionPanel;
+
     private void Awake()
     {
         Debug.Log($"[ResultsUI] Awake on {gameObject.name}");
@@ -22,6 +31,8 @@ public class ResultsUI : MonoBehaviour
     public void ShowResults(List<PlayerState> players)
     {
         Debug.Log($"[ResultsUI] ShowResults on {gameObject.name}");
+
+        HideGameplayUI();
 
         if (ResultsPanel != null)
         {
@@ -56,13 +67,10 @@ public class ResultsUI : MonoBehaviour
 
         if (ScoreSummaryText != null)
         {
-            ScoreSummaryText.text = "";
+            var lines = orderedPlayers
+                .Select(p => $"{p.PlayerName}: {p.TotalScore} (Invasives: {p.PersistentInvasives.Count})");
 
-            foreach (var player in orderedPlayers)
-            {
-                ScoreSummaryText.text += player.PlayerName + ": " + player.TotalScore + " (Invasives: " + player.PersistentInvasives.Count + ")\n";
-            }
-
+            ScoreSummaryText.text = string.Join("\n", lines);
             Debug.Log("[ResultsUI] ScoreSummaryText updated to:\n" + ScoreSummaryText.text);
         }
         else
@@ -80,6 +88,26 @@ public class ResultsUI : MonoBehaviour
         {
             MainMenuButton.onClick.RemoveAllListeners();
             MainMenuButton.onClick.AddListener(ReturnToMainMenu);
+        }
+    }
+
+    private void HideGameplayUI()
+    {
+        SetInactiveIfAssigned(HandPanel, "HandPanel");
+        SetInactiveIfAssigned(ConfirmButtonObject, "ConfirmButtonObject");
+        SetInactiveIfAssigned(SelectedCardTextObject, "SelectedCardTextObject");
+        SetInactiveIfAssigned(LogTextObject, "LogTextObject");
+        SetInactiveIfAssigned(RevealPanel, "RevealPanel");
+        SetInactiveIfAssigned(FieldPanel, "FieldPanel");
+        SetInactiveIfAssigned(TurnTransitionPanel, "TurnTransitionPanel");
+    }
+
+    private void SetInactiveIfAssigned(GameObject obj, string label)
+    {
+        if (obj != null)
+        {
+            obj.SetActive(false);
+            Debug.Log($"[ResultsUI] Hid gameplay UI object: {label}");
         }
     }
 

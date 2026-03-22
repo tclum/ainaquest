@@ -1,5 +1,0 @@
-Architecture notes:
-- Unity project uses C# scripts under Assets/Scripts
-- Development should focus on modular systems
-- Agent should only modify files explicitly listed in task scope
-- Scene, prefab, animation, and project settings changes should remain manual for now
