@@ -1,0 +1,15 @@
+Project: Para-Elementals
+Engine: Unity
+Current direction: 2D side-scrolling roguelike prototype
+
+Current known working areas:
+- player can exist in scene
+- enemies function
+- loot dropper works
+- character PNG import works
+
+Development style:
+- prefer scoped edits
+- preserve existing working systems
+- avoid risky rewrites
+- prioritize script-only changes first

@@ -1,0 +1,4 @@
+Known issues:
+- hitbox alignment has been an issue before
+- gameplay systems are still being stabilized for roguelike direction
+- must avoid introducing compile errors into working systems

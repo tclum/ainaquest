@@ -1,0 +1,12 @@
+Task: Stabilize player combat and collision alignment for the side-scrolling roguelike prototype
+
+Success Criteria:
+- Player hitbox aligns with visible sprite
+- Attack hit detection occurs near the player model
+- Existing enemy combat still functions
+- No new compile errors
+
+Editable Files:
+- Assets/Scripts/Player/PlayerCombat.cs
+- Assets/Scripts/Player/PlayerController.cs
+- Assets/Scripts/Combat/HitboxController.cs
