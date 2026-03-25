@@ -32,6 +32,17 @@ public class ResultsUI : MonoBehaviour
     {
         Debug.Log($"[ResultsUI] ShowResults on {gameObject.name}");
 
+        // Fix: Make sure ResultsPanel is visible before updating UI
+        if (ResultsPanel != null)
+        {
+            ResultsPanel.SetActive(true);
+            Debug.Log($"[ResultsUI] Activated ResultsPanel: {ResultsPanel.name}");
+        }
+        else
+        {
+            Debug.LogWarning("[ResultsUI] ShowResults called but ResultsPanel is not assigned.");
+        }
+
         HideGameplayUI();
 
         // Reset UI state before populating new results
@@ -83,17 +94,6 @@ public class ResultsUI : MonoBehaviour
         {
             MainMenuButton.onClick.RemoveAllListeners();
             MainMenuButton.onClick.AddListener(ReturnToMainMenu);
-        }
-
-        // Fix: Make sure ResultsPanel is visible when showing results.
-        if (ResultsPanel != null)
-        {
-            ResultsPanel.SetActive(true);
-            Debug.Log($"[ResultsUI] Activated ResultsPanel: {ResultsPanel.name}");
-        }
-        else
-        {
-            Debug.LogWarning("[ResultsUI] ShowResults called but ResultsPanel is not assigned.");
         }
     }
 
