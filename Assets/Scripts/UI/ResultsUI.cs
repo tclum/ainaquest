@@ -34,24 +34,20 @@ public class ResultsUI : MonoBehaviour
 
         HideGameplayUI();
 
-        if (ResultsPanel != null)
-        {
-            Debug.Log($"[ResultsUI] Activating ResultsPanel: {ResultsPanel.name}");
-            ResultsPanel.SetActive(true);
-            ResultsPanel.transform.SetAsLastSibling();
-            Debug.Log($"[ResultsUI] ResultsPanel activeSelf after SetActive(true): {ResultsPanel.activeSelf}");
-        }
-        else
-        {
-            Debug.LogWarning("[ResultsUI] ResultsPanel is not assigned.");
-        }
+        // Reset UI state before populating new results
+        if (TitleText != null)
+            TitleText.text = string.Empty;
+        if (ScoreSummaryText != null)
+            ScoreSummaryText.text = string.Empty;
 
+        // Validate players before showing panel
         if (players == null || players.Count == 0)
         {
             Debug.LogWarning("[ResultsUI] ShowResults called with no players.");
             return;
         }
-
+        // ... rest unchanged
+        // ... rest of the method unchanged
         Debug.Log("[ResultsUI] ShowResults called with " + players.Count + " players.");
 
         List<PlayerState> orderedPlayers = players
