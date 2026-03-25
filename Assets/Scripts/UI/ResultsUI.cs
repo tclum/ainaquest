@@ -46,8 +46,7 @@ public class ResultsUI : MonoBehaviour
             Debug.LogWarning("[ResultsUI] ShowResults called with no players.");
             return;
         }
-        // ... rest unchanged
-        // ... rest of the method unchanged
+
         Debug.Log("[ResultsUI] ShowResults called with " + players.Count + " players.");
 
         List<PlayerState> orderedPlayers = players
@@ -84,6 +83,17 @@ public class ResultsUI : MonoBehaviour
         {
             MainMenuButton.onClick.RemoveAllListeners();
             MainMenuButton.onClick.AddListener(ReturnToMainMenu);
+        }
+
+        // Fix: Make sure ResultsPanel is visible when showing results.
+        if (ResultsPanel != null)
+        {
+            ResultsPanel.SetActive(true);
+            Debug.Log($"[ResultsUI] Activated ResultsPanel: {ResultsPanel.name}");
+        }
+        else
+        {
+            Debug.LogWarning("[ResultsUI] ShowResults called but ResultsPanel is not assigned.");
         }
     }
 
