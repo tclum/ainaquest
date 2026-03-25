@@ -28,35 +28,24 @@ public class ResultsUI : MonoBehaviour
         Hide();
     }
 
-    public void ShowResults(List<PlayerState> players)
+public void ShowResults(List<PlayerState> players)
+{
+    Debug.Log($"[ResultsUI] ShowResults on {gameObject.name}");
+
+    HideGameplayUI();
+
+    // Reset UI state before populating new results
+    if (TitleText != null)
+        TitleText.text = string.Empty;
+    if (ScoreSummaryText != null)
+        ScoreSummaryText.text = string.Empty;
+
+    // Validate players before showing panel
+    if (players == null || players.Count == 0)
     {
-        Debug.Log($"[ResultsUI] ShowResults on {gameObject.name}");
-
-        // Fix: Make sure ResultsPanel is visible before updating UI
-        if (ResultsPanel != null)
-        {
-            ResultsPanel.SetActive(true);
-            Debug.Log($"[ResultsUI] Activated ResultsPanel: {ResultsPanel.name}");
-        }
-        else
-        {
-            Debug.LogWarning("[ResultsUI] ShowResults called but ResultsPanel is not assigned.");
-        }
-
-        HideGameplayUI();
-
-        // Reset UI state before populating new results
-        if (TitleText != null)
-            TitleText.text = string.Empty;
-        if (ScoreSummaryText != null)
-            ScoreSummaryText.text = string.Empty;
-
-        // Validate players before showing panel
-        if (players == null || players.Count == 0)
-        {
-            Debug.LogWarning("[ResultsUI] ShowResults called with no players.");
-            return;
-        }
+        Debug.LogWarning("[ResultsUI] ShowResults called with no players.");
+        return;
+    }
 
         Debug.Log("[ResultsUI] ShowResults called with " + players.Count + " players.");
 
@@ -145,3 +134,21 @@ public class ResultsUI : MonoBehaviour
         SceneManager.LoadScene("MainMenu");
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
