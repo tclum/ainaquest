@@ -274,6 +274,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardUIButton
   Label: {fileID: 2462007285879385630}
   Button: {fileID: 2654528876773456895}
+  Background: {fileID: 621123403538680803}
 --- !u!114 &7682679382927275564
 MonoBehaviour:
   m_ObjectHideFlags: 0
