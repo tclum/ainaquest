@@ -16,6 +16,8 @@ public class PlayerState
     public List<CardData> PlantedThisRound = new List<CardData>();
     public List<CardData> PersistentInvasives = new List<CardData>();
 
+
+
     public PlayerState(int id, string name, bool isHuman)
     {
         PlayerId = id;
@@ -28,19 +30,5 @@ public class PlayerState
     {
         Hand.Clear();
         PlantedThisRound.Clear();
-    }
-
-    // Syncs the score calculation with ScoringSystem
-    public void SyncScoreFromPlantedThisRound()
-    {
-        int score = 0;
-        foreach (var card in PlantedThisRound)
-        {
-            if (card.CardType != CardType.Invasive)
-            {
-                score += card.BasePoints;
-            }
-        }
-        TotalScore = score;
     }
 }
