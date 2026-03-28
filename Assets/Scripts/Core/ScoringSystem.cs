@@ -15,6 +15,7 @@ public static class ScoringSystem
             }
         }
 
+        player.TotalScore = score;
         return score;
     }
 
