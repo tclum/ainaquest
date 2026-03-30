@@ -83,13 +83,13 @@ public class FieldUI : MonoBehaviour
         }
 
         CardUIButton cardUI = cardGO.GetComponent<CardUIButton>();
-        if (cardUI != null && cardUI.Label != null)
+        if (cardUI != null)
         {
-            cardUI.Label.text = card.CardName + "\n" + card.BasePoints + " pts";
+            cardUI.Setup(card, null); // Pass null for HumanTurnUI to indicate non-interactive field card
         }
         else
         {
-            Debug.LogWarning("CardUIButton or Label missing on spawned field card prefab.");
+            Debug.LogWarning("CardUIButton missing on spawned field card prefab.");
         }
 
         Button button = cardGO.GetComponent<Button>();
