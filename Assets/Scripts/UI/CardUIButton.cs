@@ -7,6 +7,7 @@ public class CardUIButton : MonoBehaviour
     public TextMeshProUGUI Label;
     public Button Button;
     public Image Background;
+    public Image CardArtImage;
 
     private CardData cardData;
     private HumanTurnUI humanTurnUI;
@@ -32,6 +33,12 @@ public class CardUIButton : MonoBehaviour
         {
             Button.onClick.RemoveAllListeners();
             Button.onClick.AddListener(OnClicked);
+        }
+
+        if (CardArtImage != null)
+        {
+            CardArtImage.sprite = card.CardArtSprite;
+            CardArtImage.enabled = card.CardArtSprite != null;
         }
     }
 
