@@ -15,6 +15,6 @@ MonoBehaviour:
   CardName: Kalo
   CardType: 1
   ColorCategory: 3
-  BasePoints: 20
+  BasePoints: 25
   EffectType: 0
   Description: 
