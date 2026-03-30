@@ -37,8 +37,8 @@ public class CardUIButton : MonoBehaviour
 
         if (CardArtImage != null)
         {
-            CardArtImage.sprite = card.CardArtSprite;
-            CardArtImage.enabled = card.CardArtSprite != null;
+            CardArtImage.sprite = card.Artwork;
+            CardArtImage.enabled = card.Artwork != null;
         }
     }
 
