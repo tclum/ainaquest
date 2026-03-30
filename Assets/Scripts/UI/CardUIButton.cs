@@ -46,7 +46,7 @@ public class CardUIButton : MonoBehaviour
     {
         if (Background != null)
         {
-            Background.color = Color.green;
+            Background.color = selected ? Color.yellow : Color.white;
         }
     }
 
