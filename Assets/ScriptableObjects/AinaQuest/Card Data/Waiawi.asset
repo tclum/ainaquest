@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 795564376fbde451b9b90c7901dbcb37, type: 3}
   m_Name: Waiawi
   m_EditorClassIdentifier: Assembly-CSharp::CardData
+  Artwork: {fileID: 2800000, guid: cf3b91a3ed4a74525a4419d4cafed6d6, type: 3}
   CardName: Waiawi
   CardType: 2
   ColorCategory: 1
