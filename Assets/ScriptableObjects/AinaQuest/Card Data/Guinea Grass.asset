@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 795564376fbde451b9b90c7901dbcb37, type: 3}
   m_Name: Guinea Grass
   m_EditorClassIdentifier: Assembly-CSharp::CardData
-  Artwork: {fileID: 2800000, guid: d4ec9be9231054b0fbf3bdf89060399a, type: 3}
   CardName: Guinea Grass
   CardType: 2
   ColorCategory: 1
   BasePoints: 0
   EffectType: 0
+  Artwork: {fileID: 21300000, guid: d4ec9be9231054b0fbf3bdf89060399a, type: 3}
   Description: 
