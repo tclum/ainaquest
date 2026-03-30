@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 795564376fbde451b9b90c7901dbcb37, type: 3}
   m_Name: Ulu
   m_EditorClassIdentifier: Assembly-CSharp::CardData
+  Artwork: {fileID: 2800000, guid: cc05ff43c0b6c4d108b0fe5ccfb9739d, type: 3}
   CardName: Ulu
   CardType: 1
   ColorCategory: 4

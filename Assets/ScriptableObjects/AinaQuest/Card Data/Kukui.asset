@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 795564376fbde451b9b90c7901dbcb37, type: 3}
   m_Name: Kukui
   m_EditorClassIdentifier: Assembly-CSharp::CardData
+  Artwork: {fileID: 2800000, guid: a8b528497916c4fa6834d66d21f4e232, type: 3}
   CardName: Kukui
   CardType: 0
   ColorCategory: 3

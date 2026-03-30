@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 795564376fbde451b9b90c7901dbcb37, type: 3}
   m_Name: KupuKupu
   m_EditorClassIdentifier: Assembly-CSharp::CardData
+  Artwork: {fileID: 2800000, guid: 900ffe879eb9445e5ad17490640665de, type: 3}
   CardName: KupuKupu
   CardType: 0
   ColorCategory: 3
