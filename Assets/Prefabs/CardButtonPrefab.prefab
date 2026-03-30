@@ -272,6 +272,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d97197ab7c54f4ff29a1bb877d8d22ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardUIButton
+  CardArtImage: {fileID: <CardArtImage_Image_Component_FileID>}
   Label: {fileID: 2462007285879385630}
   Button: {fileID: 2654528876773456895}
   Background: {fileID: 621123403538680803}
