@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 795564376fbde451b9b90c7901dbcb37, type: 3}
   m_Name: Kalo
   m_EditorClassIdentifier: Assembly-CSharp::CardData
+  Artwork: {fileID: 2800000, guid: d31b6960dc8cf48ea9fcccf361257bce, type: 3}
   CardName: Kalo
   CardType: 1
   ColorCategory: 3
