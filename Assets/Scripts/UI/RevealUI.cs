@@ -66,9 +66,13 @@ public class RevealUI : MonoBehaviour
             }
 
             CardUIButton cardUI = cardGO.GetComponent<CardUIButton>();
-            if (cardUI != null && cardUI.Label != null)
+            if (cardUI != null)
             {
                 cardUI.Label.text = "???";
+                if (cardUI.CardArtImage != null)
+                    cardUI.CardArtImage.enabled = false;
+                if (cardUI.Background != null)
+                    cardUI.Background.color = Color.white;
             }
 
             Button button = cardGO.GetComponent<Button>();
@@ -110,9 +114,9 @@ public class RevealUI : MonoBehaviour
             yield return null;
         }
 
-        if (cardUI != null && cardUI.Label != null)
+        if (cardUI != null)
         {
-            cardUI.Label.text = card.CardName + "\n" + card.BasePoints + " pts";
+            cardUI.Setup(card, null);
         }
 
         t = 0f;
